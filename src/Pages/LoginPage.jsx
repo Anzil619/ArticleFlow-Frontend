@@ -21,16 +21,15 @@ function LoginPage() {
     password: "",
   });
 
-
   //   Validation
   const validation = () => {
     if (form.email.trim() === "") {
-    toast.error("email should not be empty");
-    return false;
+      toast.error("email should not be empty");
+      return false;
     } else if (!isValidEmail(form.email.trim())) {
-    toast.warning("enter a valid email");
-    setForm({ email: "" });
-    return false;
+      toast.warning("enter a valid email");
+      setForm({ email: "" });
+      return false;
     } else if (form.password.trim() === "") {
       toast.error("password should not be empty");
       return false;
@@ -46,27 +45,19 @@ function LoginPage() {
   const FormHandlerLogin = async (e) => {
     e.preventDefault();
     if (validation()) {
-        UserLogin(form).then((res) => {
-            
-            if (res.status === 200) {
-              const token = JSON.stringify(res.data);
-              localStorage.setItem('token',token)
-              navigate("/user/homepage/ ")
-              
-              
-            }else {
-             
-              toast.error(
-                "invalid login credentials please verify your email and password "
-              );
-                
-            }
-          });
+      UserLogin(form).then((res) => {
+        if (res.status === 200) {
+          const token = JSON.stringify(res.data);
+          localStorage.setItem("token", token);
+          navigate("/user/homepage/ ");
+        } else {
+          toast.error(
+            "invalid login credentials please verify your email and password "
+          );
         }
-      
-      };
-    
-  
+      });
+    }
+  };
 
   return (
     <div
@@ -76,7 +67,11 @@ function LoginPage() {
       }}
     >
       <Card shadow={true} className="border bg-opacity-60 px-10 py-20 sm:py-10">
-        <Typography className="flex justify-center" variant="h4" color="blue-gray">
+        <Typography
+          className="flex justify-center"
+          variant="h4"
+          color="blue-gray"
+        >
           Login To Your Account{" "}
         </Typography>
         <form
@@ -108,7 +103,7 @@ function LoginPage() {
           </div>
 
           <div className="flex justify-center mt-8 items-center">
-          <button
+            <button
               type="submit"
               className="font-bold text border border-gray-600 rounded-full px-4 py-2 sm:px-6 sm:py-2 bg-white text-black hover:bg-black hover:text-white transition duration-300 ease-in-out"
             >
@@ -116,9 +111,14 @@ function LoginPage() {
             </button>
           </div>
           <Typography color="gray" className="mt-4 text-center font-normal">
-              Don't have an accoount ?
-              <a onClick={()=>navigate("/signup")} className="font-medium text-gray-900 hover:underline">Register</a>
-            </Typography>
+            Don't have an accoount ?
+            <a
+              onClick={() => navigate("/signup")}
+              className="font-medium text-gray-900 hover:underline"
+            >
+              Register
+            </a>
+          </Typography>
         </form>
       </Card>
       <ToastContainer />

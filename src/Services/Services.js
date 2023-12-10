@@ -89,6 +89,37 @@ import { userAxiosInstant } from "../AxiosUtils/AxiosUtils";
       });
   }
 
+  const ShareArticle = ( values) =>{
+    return userAxiosInstant
+      .post(`article/createarticle/`, values, {
+        withCredentials: true,
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          RefreshToken();
+        } else {
+          console.log(error);
+          error.response;
+        }
+      });
+  }
+
+  const GetCategory = () =>{
+    return userAxiosInstant
+      .get(`article/listcategory/`, {
+        withCredentials: true,
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          RefreshToken();
+        } else {
+          console.log(error);
+          error.response;
+        }
+      });
+  }
 
 
-  export { Logout,UserLogin,GetProfileDetails,EditProfileDetails,ChangeUserPassword};
+
+
+  export { Logout,UserLogin,GetProfileDetails,EditProfileDetails,ChangeUserPassword,ShareArticle,GetCategory};
