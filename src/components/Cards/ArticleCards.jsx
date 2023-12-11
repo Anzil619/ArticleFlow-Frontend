@@ -9,9 +9,33 @@ import {
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ArticleInteractions } from "../../Services/Services";
+import { jwtDecode } from "jwt-decode";
+import { ConfirmDialogue } from "../drawer/ConfirmDialogue";
 
-export function ArticleCards({name , description, image , tags, category, author }) {
+export function ArticleCards({name , description, image , tags, category, author,id,like,dislike,userInteractions,onokclick }) {
+  const token = localStorage.getItem('token')
+  const decoded = jwtDecode(token)
+
+  const onSubmit = ()=>{
+    const preference = 'foryou'
+    onokclick(preference);
+  }
+  useEffect(() => {
+    const currentUserInteraction = userInteractions.find(interaction => interaction.user === decoded.user_id);
+  
+    if (currentUserInteraction) {
+      setIsLiked(currentUserInteraction.liked);
+      setIsDisliked(currentUserInteraction.disliked);
+    } else {
+      setIsLiked(false);
+      setIsDisliked(false);
+    }
+  }, []);
+  
+
+
 
   // truncate words 
   const truncateDescription = (description, wordLimit) => {
@@ -21,7 +45,6 @@ export function ArticleCards({name , description, image , tags, category, author
       const truncatedDescription = words.slice(0, wordLimit).join(' ') + '...';
       return truncatedDescription;
     }
-  
     return description;
   };
 
@@ -29,15 +52,57 @@ export function ArticleCards({name , description, image , tags, category, author
   const truncatedDescription = truncateDescription(description, 35);
 
 
-
-
   const [isDisliked, setIsDisliked] = useState(false);
-  const handledislike = () => {
-    setIsDisliked(!isDisliked);
+  const handledislike = async() => {
+    try{
+      const data = {
+        user : decoded.user_id,
+        article : id,
+        action : 'dislike'
+      }
+      const res = await ArticleInteractions(data)
+      console.log(res.data,"hi");
+      setIsLiked(false);
+      setIsDisliked(true);
+      onSubmit();
+    }catch(error){
+      console.log(error);
+    }
+    
   };
   const [isLiked, setIsLiked] = useState(false);
-  const handleLike = () => {
-    setIsLiked(!isLiked);
+  const handleLike = async() => {
+    try{
+      const data = {
+        user : decoded.user_id,
+        article : id,
+        action : 'like'
+      }
+      const res = await ArticleInteractions(data)
+      console.log(res.data,"like");
+      setIsLiked(true);
+      setIsDisliked(false);
+      onSubmit();
+    }catch(error){
+      console.log(error);
+    }
+  };
+
+  const handleBlock = async(id) => {
+    try{
+      const data = {
+        user : decoded.user_id,
+        article : id,
+        action : 'block'
+      }
+      const res = await ArticleInteractions(data)
+      console.log(res.data,"block");
+      setIsLiked(false);
+      setIsDisliked(false);
+      onSubmit();
+    }catch(error){
+      console.log(error);
+    }
   };
 
   return (
@@ -61,12 +126,11 @@ export function ArticleCards({name , description, image , tags, category, author
           <div className="mt-4 mr-8 ">
             <Tooltip content="Block this post">
               <button
-                className={` focus:outline-none transform transition-all ${
-                  isLiked ? "scale-110 text-blue-700" : ""
-                }`}
-                onClick={handleLike}
+                className='hover:scale-110'
+                // onClick={handleLike}
               >
-                <MdOutlineReportGmailerrorred size={25} />
+                <ConfirmDialogue id ={id} header = "Block" content='You wont be able to see this post again' onsubmit={handleBlock} />
+                
               </button>
             </Tooltip>
           </div>
@@ -99,7 +163,8 @@ export function ArticleCards({name , description, image , tags, category, author
                 />
               </svg>
             </Button>
-            <div className="mt-2 ml-20">
+            
+            <div className="mt-1 ml-10 flex gap-1">
               <button
                 className={` focus:outline-none transform transition-all ${
                   isLiked ? "scale-110 text-blue-700" : ""
@@ -107,17 +172,23 @@ export function ArticleCards({name , description, image , tags, category, author
                 onClick={handleLike}
               >
                 <FaThumbsUp />
+                
               </button>
+              <h1 className="text-sm mt-2">{like}</h1>
+              
             </div>
-            <div className="mt-2 ml-5">
+            
+            <div className="mt-1 ml-5 flex gap-1 ">
               <button
-                className={` focus:outline-none transform transition-all ${
+                className={` focus:outline-none transform transition-all mt-1 ${
                   isDisliked ? "scale-110 text-blue-700" : ""
                 }`}
                 onClick={handledislike}
               >
                 <FaThumbsDown />
               </button>
+              <h1 className="text-sm mt-2">{dislike}</h1>
+              
             </div>
           </div>
         </a>

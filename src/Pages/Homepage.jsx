@@ -23,6 +23,7 @@ function Homepage() {
   const [filteredpref, setFilteredpref] = useState([]);
 
 
+
   useEffect(() => {
     handleListCategory();
     handleCategoryClick(selectedCategory);
@@ -84,10 +85,12 @@ function Homepage() {
       return
     }
     try {
-
       const res = await DeletePreference(id);
       // console.log(res.data, "anzillllll");
       handlePreferenceList();
+      console.log(category,"cate");
+      const preference = 'foryou'
+      handleCategoryClick(preference);
       // filterPreference(preference,category)
     } catch (error) {
       // console.log(error);
@@ -109,7 +112,9 @@ function Homepage() {
       const res = await CreatePreference(data);
       // console.log(res.data, "anzillllll");
       handlePreferenceList();
-      // filterPreference(preference,category)
+      const preference = 'foryou'
+      handleCategoryClick(preference);
+      
       
     } catch (error) {
       // console.log(error);
@@ -122,12 +127,13 @@ function Homepage() {
   const [selectedCategory, setSelectedCategory] = useState("foryou");
 
   const handleCategoryClick = async (category) => {
+    console.log("aaani");
     if (category === "foryou") {
       setSelectedCategory(category);
       try {
+        console.log("hi");
         
         const res = await GetUserPreferences(decoded.user_id);
-        
         const preferencesArray = res.data.map((item) => item.preference.id);
         console.log(res.data, "preder");
         const data = {
@@ -140,19 +146,21 @@ function Homepage() {
       } catch (error) {
         // console.log(error);
       }
+
     } else {
       setSelectedCategory(category);
       try {
+        console.log("aaaaaaanniiiiiiii");
         let arr = [];
         arr.push(category);
         const data = {
           category_ids: arr,
         };
         const res = await GetArticles(data);
-        // console.log(res.data, "anzillllll");
+        console.log(res.data, "anzillllll");
         setArticle(res.data);
       } catch (error) {
-        // console.log(error);
+        console.log(error);
       }
     }
   };
@@ -201,10 +209,15 @@ function Homepage() {
                         <ArticleCards
                           name={e.article_name}
                           description={e.description}
-                          image={e.image}
+                          image={`${import.meta.env.VITE_BASE_URL}${e.image}`}
                           tags={e.tags}
                           category={e.category.category}
                           author={e.author.username}
+                          id ={e.id}
+                          like ={e.like_count}
+                          dislike ={e.dislike_count}
+                          userInteractions = {e.user_interactions}
+                          onokclick = {handleCategoryClick}
                         />
                       </div>
                     ))
@@ -228,13 +241,10 @@ function Homepage() {
                 <div className="w-28 rounded-full border border-blue-gray-200 h-10 flex justify-center items-center ">
                   <h1 className="text-sm mr-2">{e.preference.category}</h1>
                   <FaTrash onClick={()=>handleDeletePreference(e.id)} className="hover:scale-110" />
-
                 </div>
               ))}
             </div>
           </div>
-
-         
 
           <div className="flex justify-center mt-16">
             <h1 className="font-bold">Select Your Preferences</h1>

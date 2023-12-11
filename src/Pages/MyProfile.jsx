@@ -160,17 +160,8 @@ const GetProfile = async () => {
             <p class="font-light text-gray-600 mt-3">{profile?.email}</p>
             <p class="mt-8 text-gray-500">{profile?.phone}</p>
             <p class="mt-2 text-gray-500">DOB : {profile?.dob}</p>
-            <div className="flex justify-between">
-              <Menu placement="top">
-                <MenuHandler>
-                  <Button>Preferences</Button>
-                </MenuHandler>
-                <MenuList>
-                  <MenuItem>Menu Item 1</MenuItem>
-                  <MenuItem>Menu Item 2</MenuItem>
-                  <MenuItem>Menu Item 3</MenuItem>
-                </MenuList>
-              </Menu>
+            <div className="flex justify-end">
+                
               <div className="relative h-10 w-full">
                 <div className="absolute right-10">
                   <SpeedDial>
@@ -227,6 +218,11 @@ const GetProfile = async () => {
                 tags={e.tags}
                 category={e.category.category}
                 author={e.author.username}
+                id ={e.id}
+                like ={e.like_count}
+                dislike ={e.dislike_count}
+                userInteractions = {e.user_interactions}
+                onokclick = {handleUserArticle}
                 />
               </div>
             </div>

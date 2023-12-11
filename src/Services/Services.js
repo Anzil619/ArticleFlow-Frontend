@@ -192,6 +192,21 @@ const CreatePreference = (values) => {
     });
 };
 
+const ArticleInteractions = (values) => {
+  return userAxiosInstant
+    .post(`article/user-interaction/`, values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 401) {
+        RefreshToken();
+      } else {
+        console.log(error);
+        return error.response;
+      }
+    });
+};
+
 export {
   Logout,
   UserLogin,
@@ -205,4 +220,5 @@ export {
   CreatePreference,
   GetUserPreferences,
   DeletePreference,
+  ArticleInteractions,
 };
