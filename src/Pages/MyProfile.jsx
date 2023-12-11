@@ -3,6 +3,7 @@ import { StickyNavbar } from "../components/Navbar/StickyNavbar";
 import profile_photo from "../assets/profile/3dprof.jpg";
 import { ArticleCards } from "../components/Cards/ArticleCards";
 
+
 import {
   IconButton,
   SpeedDial,
@@ -23,15 +24,19 @@ import {
 } from "@heroicons/react/24/outline";
 import { FaEdit, FaHeart, FaKey } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
-import { ChangeUserPassword, EditProfileDetails, GetProfileDetails } from "../Services/Services";
+import { ChangeUserPassword, EditProfileDetails, GetProfileDetails, GetUserArticles } from "../Services/Services";
 import EditProfileDialogue from "../components/drawer/EditProfileDialogue";
 
 
 function MyProfile() {
 
+  const token = localStorage.getItem('token');
+  const decoded = jwtDecode(token);
+
   // edit profile through speeddial and dialogue box
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
+  const [article, setArticle] = useState(null);
 
   const handleEditClick = (title) => {
     
@@ -83,22 +88,33 @@ function MyProfile() {
       const res = await ChangeUserPassword(data)
       toast.success(res.data.message)
       GetProfile();
-      
+
     }catch(error){
       console.log(error);
     }
   }
   }
   
+
+  const handleUserArticle = async() =>{
+    try{
+      const res = await GetUserArticles(decoded.user_id)
+      console.log(res.data);
+      setArticle(res.data)
+    }catch(error){
+      console.log(error);
+    }
+  }
+
  useEffect(() => {
   GetProfile();
+  handleUserArticle();
 }, []);
 
 
 const GetProfile = async () => {
   try {
-    const token = localStorage.getItem('token');
-    const decoded = jwtDecode(token);
+    
     console.log(decoded, "decoded");
 
 
@@ -200,11 +216,25 @@ const GetProfile = async () => {
             <button class="text-indigo-500 py-2 px-4  font-medium mt-4">
               Posts
             </button>
+            {article && article.length > 0 ? (
+                    article.map((e) => (
             <div className="mt-5">
               <div className="flex justify-center">
-                <ArticleCards />
+                <ArticleCards
+                name={e.article_name}
+                description={e.description}
+                image={e.image}
+                tags={e.tags}
+                category={e.category.category}
+                author={e.author.username}
+                />
               </div>
             </div>
+            ))
+                  ) : (
+                    <p className="text-center">NO ARTICLE FOUND</p>
+                  )}
+            
           </div>
         </div>
       </div>

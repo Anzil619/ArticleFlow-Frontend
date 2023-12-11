@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 function CreateArticle() {
   const [newImg, setNewImg] = useState(null); // To track the selected image file
   const [showImage, setShowImage] = useState(null); // To display the selected image
@@ -22,7 +23,7 @@ function CreateArticle() {
     tags: "",
     description: "",
   });
-  
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
 
@@ -50,6 +51,19 @@ function CreateArticle() {
     }
   };
 
+  const truncateDescription = (description) => {
+    const words = description.split(' ');
+  
+    if (words.length < 50) {
+      
+      return true;
+    }else{
+        return false
+    }
+  
+    
+  };
+
   const validation = () => {
     if (form.article_name.trim() === "") {
       toast.error("Article name should not be empty");
@@ -61,6 +75,9 @@ function CreateArticle() {
     }
     else if (newImg === null) {
         toast.error("Please provide an Image");
+        return false;
+      }else if (truncateDescription(form.description)){
+        toast.error("Description should be atleast 50 words")
         return false;
       }
     return true;
@@ -77,7 +94,7 @@ function CreateArticle() {
       formData.append("author", decoded.user_id);
       formData.append("image", newImg);
       const res = await ShareArticle(formData);
-      navigate("/user/homepage/");
+    //   navigate("/user/homepage/");
       console.log(res);
     } catch (error) {
       console.log(error);
