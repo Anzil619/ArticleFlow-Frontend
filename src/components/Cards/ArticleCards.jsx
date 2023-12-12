@@ -120,7 +120,7 @@ export function ArticleCards({
     return description;
   };
 
-  const truncatedDescription = truncateDescription(description, 35);
+  const truncatedDescription = truncateDescription(description, 20);
 
   const [isDisliked, setIsDisliked] = useState(false);
   const handledislike = async () => {
