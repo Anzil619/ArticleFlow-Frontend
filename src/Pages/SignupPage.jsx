@@ -106,6 +106,8 @@ function SignupPage() {
           console.log(errorData, "anzil");
           if (errorData.email) {
             toast.error(errorData.email[0]);
+          }else if(errorData.phone){
+            toast.error(errorData.phone[0]);
           }
         } else {
           toast.error("An error occurred during registration.");
