@@ -54,7 +54,10 @@ export function ArticleCards({
       formData.append("tags", data.tags);
       formData.append("description", data.description);
       formData.append("author", decoded.user_id);
-      formData.append("image", img);
+      if (img instanceof File) {
+        formData.append("image", img);
+      }
+      
       const res = await EditArticles(id,formData)
       console.log(res.data);
       onSubmit();

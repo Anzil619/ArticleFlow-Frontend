@@ -97,25 +97,8 @@ const EditArticleDialogue = ({ isOpen, onClose, title, onSubmit,profile_data,set
     return true;
   };
 
-  
-//   const handleCreateArticle = async () => {
-//     if (validation()){
-//     try {
-//       const formData = new FormData();
-//       formData.append("article_name", form.article_name);
-//       formData.append("category", form.category);
-//       formData.append("tags", form.tags);
-//       formData.append("description", form.description);
-//       formData.append("author", decoded.user_id);
-//       formData.append("image", newImg);
-//       const res = await ShareArticle(formData);
-//       navigate("/user/homepage/");
-//       console.log(res);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-// }
+
+
 
 
   return (
@@ -136,6 +119,7 @@ const EditArticleDialogue = ({ isOpen, onClose, title, onSubmit,profile_data,set
               value={category}
               onChange={handleChange}
               className="text-blue-gray-700 border border-blue-gray-200 rounded-md p-2 w-full"
+              disabled
             >
               <option disabled value="">
                 Select Category
