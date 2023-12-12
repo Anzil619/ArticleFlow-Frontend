@@ -58,8 +58,6 @@ function LoginPage() {
           }else{
             navigate("/user/choosepreference/ ");
           }
-
-          
         } else {
           toast.error(
             "invalid login credentials please verify your email and password "

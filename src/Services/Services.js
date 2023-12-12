@@ -85,7 +85,7 @@ const ChangeUserPassword = (values) => {
         error.response;
       }
     });
-};
+};  
 
 const ShareArticle = (values) => {
   return userAxiosInstant

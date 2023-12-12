@@ -55,16 +55,7 @@ export function StickyNavbar() {
         </a>
       </Typography>
 
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal"
-      >
-        <a href="#" className="flex items-center">
-          Feed
-        </a>
-      </Typography>
+      
 
       <Typography
         as="li"

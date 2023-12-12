@@ -51,8 +51,29 @@ function MyProfile() {
   const [profile, setProfile] = useState(null)
 
 
+ // validation for userprofile edit
+ const ValidationUserProfile = (data) =>{
+  if(data.first_name.trim() === ''){
+    toast.error("First Name is empty")
+    return false;
+  }else if(data.last_name.trim() === ''){
+    toast.error("Last Name is Empty")
+    return false;
+  }else if(data.phone.trim() === ''){
+    toast.error("phone number is Empty")
+    return false;
+  }else if(data.phone.trim().length !== 10){
+    toast.error("Phone number should atleast be 10")
+    return false;
+  }
+  return true;
+} 
+
+
+
   // edit profile
   const handleProfileSubmit = async(data) =>{
+    if (ValidationUserProfile(data)){
     try{
       const res = await EditProfileDetails(data.id, data)
       console.log(res.data);
@@ -60,6 +81,7 @@ function MyProfile() {
     }catch(error){
       console.log(error);
     }
+  }
 
   }
 
@@ -177,12 +199,7 @@ const GetProfile = async () => {
             <FaEdit className="h-5 w-5" />
             <Typography {...labelProps}>Edit Profile</Typography>
           </SpeedDialAction>
-                      <SpeedDialAction className="relative">
-                        <FaHeart className="h-5 w-5" />
-                        <Typography {...labelProps}>
-                          Change Preference
-                        </Typography>
-                      </SpeedDialAction>
+                      
                       <SpeedDialAction className="relative" onClick={() => handleEditClick('ChangePassword')}>
             <FaKey className="h-5 w-5" />
             <Typography {...labelProps}>Change Password</Typography>
