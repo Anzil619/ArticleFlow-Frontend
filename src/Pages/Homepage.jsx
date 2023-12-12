@@ -15,22 +15,22 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Homepage() {
   const token = localStorage.getItem("token");
-  const decoded = jwtDecode(token)
+  const decoded = jwtDecode(token);
 
   const [category, setCategory] = useState(null);
   const [article, setArticle] = useState(null);
   const [preference, setPreference] = useState(null);
   const [filteredpref, setFilteredpref] = useState([]);
 
-
+  const[filtered,setFiltered] = useState(null)
 
   useEffect(() => {
     handleListCategory();
     handleCategoryClick(selectedCategory);
     handlePreferenceList();
-    
+    filterPreference();
+
     // filterPreference(preference,category)
-    
   }, []);
 
   const handleListCategory = async () => {
@@ -38,38 +38,44 @@ function Homepage() {
       const res = await GetCategory();
       // console.log(res.data, "sdaasda");
       setCategory(res.data);
-      
-
     } catch (error) {
       // console.log(error);
     }
   };
 
-  // const filterPreference = (preference, category) => {
-  //   if (!preference || !category) {
-  //     console.log("hi andi");
-  //     return [];
-  //   }
-  //   console.log("hi");
-  //   const preferenceIds = preference.map(item => item.preference.category);
-  //   const categoryIds = category.map(item => item.category);
-  
-  //   console.log(preferenceIds,"preference");
-  //   console.log(categoryIds,"category");
+  const filterPreference = async (preference, category) => {
+    try {
+      const res = await GetCategory();
+      const res1 = await GetUserPreferences(decoded.user_id);
+      console.log(res.data,"category");
+      console.log(res1.data,"preferences");
+      const preferenceCategories = res1.data.map(pref => pref.preference.category);
+
+      // Filtering out categories that are in preferences
+      const filteredCategoryList = res.data.filter(cat => !preferenceCategories.includes(cat.category));
+      setFiltered(filteredCategoryList)
+    } catch (error) {
+      console.log(error);
+    }
+
     
-  //   const combinedValues = [...preferenceIds, ...categoryIds]; // Combine both arrays
-  //   const uniqueSet = new Set(combinedValues); // Create a set to store unique values
-  
-  //   const filtered = Array.from(uniqueSet);
-  //   console.log(filtered,"anzilssss");
-  //   setFilteredpref(filtered); // Set the state with an array of unique values
 
-  // };
-  
+    
+    // const preferenceIds = preference.map((item) => item.preference.category);
+    // const categoryIds = category.map((item) => item.category);
 
-  
+    // console.log(preferenceIds, "preference");
+    // console.log(categoryIds, "category");
+
+    // const combinedValues = [...preferenceIds, ...categoryIds]; // Combine both arrays
+    // const uniqueSet = new Set(combinedValues); // Create a set to store unique values
+
+    // const filtered = Array.from(uniqueSet);
+    // console.log(filtered, "anzilssss");
+    // setFilteredpref(filtered); // Set the state with an array of unique values
+  };
+
   const handlePreferenceList = async () => {
-    
     try {
       const res = await GetUserPreferences(decoded.user_id);
       // console.log(res.data, "preferenceeeeeeeee");
@@ -80,48 +86,45 @@ function Homepage() {
   };
 
   const handleDeletePreference = async (id) => {
-    if (preference.length <=1){
-      toast.warning("Sorry,You should have atleast three preferences")
-      return
+    if (preference.length <= 1) {
+      toast.warning("Sorry,You should have atleast three preferences");
+      return;
     }
     try {
       const res = await DeletePreference(id);
       // console.log(res.data, "anzillllll");
       handlePreferenceList();
-      console.log(category,"cate");
-      const preference = 'foryou'
+      console.log(category, "cate");
+      const preference = "foryou";
       handleCategoryClick(preference);
-      // filterPreference(preference,category)
+      filterPreference();
+      
     } catch (error) {
       // console.log(error);
     }
   };
 
   const handleCreatePreference = async (id) => {
-    if (preference.length >=8){
-      toast.warning("Sorry,You can only have atmost eight preferences")
-      return
+    if (preference.length >= 8) {
+      toast.warning("Sorry,You can only have atmost eight preferences");
+      return;
     }
     try {
-
       const data = {
-        user : decoded.user_id,
-        preference : id,
-      }
+        user: decoded.user_id,
+        preference: id,
+      };
       // console.log(data,"data");
       const res = await CreatePreference(data);
       // console.log(res.data, "anzillllll");
       handlePreferenceList();
-      const preference = 'foryou'
+      const preference = "foryou";
       handleCategoryClick(preference);
-      
-      
+      filterPreference();
     } catch (error) {
       // console.log(error);
     }
   };
-
-
 
   // select category
   const [selectedCategory, setSelectedCategory] = useState("foryou");
@@ -131,37 +134,45 @@ function Homepage() {
     if (category === "foryou") {
       setSelectedCategory(category);
       try {
-        console.log("hi");
-        
+        // console.log("hi");
+
         const res = await GetUserPreferences(decoded.user_id);
         const preferencesArray = res.data.map((item) => item.preference.id);
-        console.log(res.data, "preder");
+        // console.log(res.data, "preder");
         const data = {
           category_ids: preferencesArray,
         };
         const res1 = await GetArticles(data);
-        const filteredArticles = res1.data.filter(article => !article.user_interactions.some(interaction => interaction.blocked));
+        const filteredArticles = res1.data.filter(
+          (article) =>
+            !article.user_interactions.some(
+              (interaction) => interaction.blocked
+            )
+        );
 
-        
-        console.log(filteredArticles, "ambuja");
+        // console.log(filteredArticles, "ambuja");
         setArticle(filteredArticles);
         // console.log(res.data, "userpreferences");
       } catch (error) {
         // console.log(error);
       }
-
     } else {
       setSelectedCategory(category);
       try {
-        console.log("aaaaaaanniiiiiiii");
+        // console.log("aaaaaaanniiiiiiii");
         let arr = [];
         arr.push(category);
         const data = {
           category_ids: arr,
         };
         const res = await GetArticles(data);
-        const filteredArticles = res.data.filter(article => !article.user_interactions.some(interaction => interaction.blocked));
-        console.log(filteredArticles, "ambuja");
+        const filteredArticles = res.data.filter(
+          (article) =>
+            !article.user_interactions.some(
+              (interaction) => interaction.blocked
+            )
+        );
+        // console.log(filteredArticles, "ambuja");
         setArticle(filteredArticles);
       } catch (error) {
         console.log(error);
@@ -217,12 +228,12 @@ function Homepage() {
                           tags={e.tags}
                           category={e.category.category}
                           author={e.author.username}
-                          author_id ={e.author.id}
-                          id ={e.id}
-                          like ={e.like_count}
-                          dislike ={e.dislike_count}
-                          userInteractions = {e.user_interactions}
-                          onokclick = {handleCategoryClick}
+                          author_id={e.author.id}
+                          id={e.id}
+                          like={e.like_count}
+                          dislike={e.dislike_count}
+                          userInteractions={e.user_interactions}
+                          onokclick={handleCategoryClick}
                         />
                       </div>
                     ))
@@ -234,7 +245,7 @@ function Homepage() {
             </div>
           </div>
         </div>
-        
+
         <div className=" mt-16 w-1/3">
           <div className="flex justify-center">
             <h1 className="font-bold">Your Preferences</h1>
@@ -245,7 +256,10 @@ function Homepage() {
               {preference?.map((e) => (
                 <div className="w-28 rounded-full border border-blue-gray-200 h-10 flex justify-center items-center ">
                   <h1 className="text-sm mr-2">{e.preference.category}</h1>
-                  <FaTrash onClick={()=>handleDeletePreference(e.id)} className="hover:scale-110" />
+                  <FaTrash
+                    onClick={() => handleDeletePreference(e.id)}
+                    className="hover:scale-110"
+                  />
                 </div>
               ))}
             </div>
@@ -257,22 +271,21 @@ function Homepage() {
 
           <div className="flex justify-center">
             <div className="grid grid-cols-3 gap-5 mt-10">
-              {category?.map((e) => (
+              {filtered?.map((e) => (
                 <div className="w-28 rounded-full border border-blue-gray-200 h-10  flex justify-center items-center ">
                   <h1 className="text-sm mr-2">{e.category}</h1>
-                <FaPlusCircle onClick={()=>handleCreatePreference(e.id)} color="Gray" className="hover:scale-110"/>
-
+                  <FaPlusCircle
+                    onClick={() => handleCreatePreference(e.id)}
+                    color="Gray"
+                    className="hover:scale-110"
+                  />
                 </div>
               ))}
             </div>
           </div>
-
         </div>
-        
-        
       </div>
       <ToastContainer />
-
     </div>
   );
 }
