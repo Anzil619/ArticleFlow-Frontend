@@ -61,7 +61,6 @@ function MyProfile() {
       console.log(error);
     }
 
-    
   }
 
   const ValidatePassword = (data) =>{
@@ -143,6 +142,9 @@ const GetProfile = async () => {
         <StickyNavbar />
       </div>
 
+     
+
+
       <div></div>
 
       <div class="p-16">
@@ -218,6 +220,7 @@ const GetProfile = async () => {
                 tags={e.tags}
                 category={e.category.category}
                 author={e.author.username}
+                author_id = {e.author.id}
                 id ={e.id}
                 like ={e.like_count}
                 dislike ={e.dislike_count}

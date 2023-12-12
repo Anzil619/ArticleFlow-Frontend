@@ -59,7 +59,7 @@ const GetProfileDetails = (id) => {
 
 const EditProfileDetails = (id, values) => {
   return userAxiosInstant
-    .put(`accounts/profile/${id}/`, values, {
+    .patch(`accounts/profile/${id}/`, values, {
       withCredentials: true,
     })
     .catch((error) => {
@@ -90,6 +90,36 @@ const ChangeUserPassword = (values) => {
 const ShareArticle = (values) => {
   return userAxiosInstant
     .post(`article/createarticle/`, values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      if (error.response.status === 401) {
+        RefreshToken();
+      } else {
+        console.log(error);
+        error.response;
+      }
+    });
+};
+
+const EditArticles = (id, values) => {
+  return userAxiosInstant
+    .patch(`article/editarticle/${id}/`, values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      if (error.response.status === 401) {
+        RefreshToken();
+      } else {
+        console.log(error);
+        error.response;
+      }
+    });
+};
+
+const DeleteArticle = (id) => {
+  return userAxiosInstant
+    .delete(`article/editarticle/${id}/`, {
       withCredentials: true,
     })
     .catch((error) => {
@@ -192,6 +222,21 @@ const CreatePreference = (values) => {
     });
 };
 
+const CreateBulkPreference = (values) => {
+  return userAxiosInstant
+    .post(`article/bulkpreference/`,values, {
+      withCredentials: true,
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 401) {
+        RefreshToken();
+      } else {
+        console.log(error);
+        return error.response;
+      }
+    });
+};
+
 const ArticleInteractions = (values) => {
   return userAxiosInstant
     .post(`article/user-interaction/`, values, {
@@ -221,4 +266,7 @@ export {
   GetUserPreferences,
   DeletePreference,
   ArticleInteractions,
+  CreateBulkPreference,
+  EditArticles,
+  DeleteArticle,
 };

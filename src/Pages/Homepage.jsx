@@ -140,8 +140,11 @@ function Homepage() {
           category_ids: preferencesArray,
         };
         const res1 = await GetArticles(data);
-        console.log(res1.data, "anzillllll");
-        setArticle(res1.data);
+        const filteredArticles = res1.data.filter(article => !article.user_interactions.some(interaction => interaction.blocked));
+
+        
+        console.log(filteredArticles, "ambuja");
+        setArticle(filteredArticles);
         // console.log(res.data, "userpreferences");
       } catch (error) {
         // console.log(error);
@@ -157,8 +160,9 @@ function Homepage() {
           category_ids: arr,
         };
         const res = await GetArticles(data);
-        console.log(res.data, "anzillllll");
-        setArticle(res.data);
+        const filteredArticles = res.data.filter(article => !article.user_interactions.some(interaction => interaction.blocked));
+        console.log(filteredArticles, "ambuja");
+        setArticle(filteredArticles);
       } catch (error) {
         console.log(error);
       }
@@ -213,6 +217,7 @@ function Homepage() {
                           tags={e.tags}
                           category={e.category.category}
                           author={e.author.username}
+                          author_id ={e.author.id}
                           id ={e.id}
                           like ={e.like_count}
                           dislike ={e.dislike_count}

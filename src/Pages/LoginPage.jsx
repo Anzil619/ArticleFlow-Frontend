@@ -13,6 +13,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserLogin } from "../Services/Services";
+import { jwtDecode } from "jwt-decode";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -49,7 +50,16 @@ function LoginPage() {
         if (res.status === 200) {
           const token = JSON.stringify(res.data);
           localStorage.setItem("token", token);
-          navigate("/user/homepage/ ");
+          const decoded = jwtDecode(token)
+          console.log(decoded);
+          if (decoded.user_data.is_completed){
+            navigate("/user/homepage/ ");
+
+          }else{
+            navigate("/user/choosepreference/ ");
+          }
+
+          
         } else {
           toast.error(
             "invalid login credentials please verify your email and password "

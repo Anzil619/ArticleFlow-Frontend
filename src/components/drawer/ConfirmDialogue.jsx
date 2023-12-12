@@ -7,9 +7,10 @@ import {
   DialogFooter,
 } from "@material-tailwind/react";
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
+import { FaTrash } from "react-icons/fa";
 
  
-export function ConfirmDialogue({button, header, content, onsubmit ,id}) {
+export function ConfirmDialogue({button, header, content, onsubmit ,id, purpose}) {
    
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
@@ -23,7 +24,8 @@ export function ConfirmDialogue({button, header, content, onsubmit ,id}) {
   return (
     <>
       <button onClick={handleOpen} variant="gradient">
-      <MdOutlineReportGmailerrorred size={25} />
+        {purpose === 'delete' ? <FaTrash/> : <MdOutlineReportGmailerrorred size={25} />}
+      
       </button>
       <Dialog
         open={open}

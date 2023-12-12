@@ -8,23 +8,95 @@ import {
 } from "@material-tailwind/react";
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 
-import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
+import { FaEdit, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { ArticleInteractions } from "../../Services/Services";
+import { ArticleInteractions, DeleteArticle, EditArticles } from "../../Services/Services";
 import { jwtDecode } from "jwt-decode";
 import { ConfirmDialogue } from "../drawer/ConfirmDialogue";
+import EditArticleDialogue from "../drawer/EditArticleDialogue";
+import { ArticleView } from "../drawer/ArticleView";
 
-export function ArticleCards({name , description, image , tags, category, author,id,like,dislike,userInteractions,onokclick }) {
-  const token = localStorage.getItem('token')
-  const decoded = jwtDecode(token)
+export function ArticleCards({
+  name,
+  description,
+  image,
+  author_id,
+  tags,
+  category,
+  author,
+  id,
+  like,
+  dislike,
+  userInteractions,
+  onokclick,
+}) {
 
-  const onSubmit = ()=>{
-    const preference = 'foryou'
-    onokclick(preference);
+  const token = localStorage.getItem("token");
+  const decoded = jwtDecode(token);
+
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const handleCloseDialog = () => {
+    setIsEditDialogOpen(false);
+  };
+  const handleEditClick = () => {
+    
+    setIsEditDialogOpen(true);
+    
+  };
+
+  const handleArticleEdit = async(data,img) =>{
+    console.log(data,"data");
+    console.log(img,"image");
+    try{
+      const formData = new FormData();
+      formData.append("article_name", data.article_name);
+      // formData.append("category", data.category);
+      formData.append("tags", data.tags);
+      formData.append("description", data.description);
+      formData.append("author", decoded.user_id);
+      formData.append("image", img);
+      const res = await EditArticles(id,formData)
+      console.log(res.data);
+      onSubmit();
+
+    }catch(error){
+      console.log(error);
+    }
   }
-  useEffect(() => {
-    const currentUserInteraction = userInteractions.find(interaction => interaction.user === decoded.user_id);
+  const handleArticleDelete = async() =>{
+    
+    try{
+     
+      const res = await DeleteArticle(id)
+      console.log(res.data);
+      onSubmit();
+
+    }catch(error){
+      console.log(error);
+    }
+  }
+
   
+
+
+
+  const [article, setArticle] = useState({"article_name" : name ,"description" : description , "image" : image ,"tags" : tags, "category" : category, })
+
+
+
+
+
+  console.log(author, "author");
+
+  const onSubmit = () => {
+    const preference = "foryou";
+    onokclick(preference);
+  };
+  useEffect(() => {
+    const currentUserInteraction = userInteractions.find(
+      (interaction) => interaction.user === decoded.user_id
+    );
+
     if (currentUserInteraction) {
       setIsLiked(currentUserInteraction.liked);
       setIsDisliked(currentUserInteraction.disliked);
@@ -33,74 +105,68 @@ export function ArticleCards({name , description, image , tags, category, author
       setIsDisliked(false);
     }
   }, []);
-  
 
-
-
-  // truncate words 
+  // truncate words
   const truncateDescription = (description, wordLimit) => {
-    const words = description.split(' ');
-  
+    const words = description.split(" ");
+
     if (words.length > wordLimit) {
-      const truncatedDescription = words.slice(0, wordLimit).join(' ') + '...';
+      const truncatedDescription = words.slice(0, wordLimit).join(" ") + "...";
       return truncatedDescription;
     }
     return description;
   };
 
-
   const truncatedDescription = truncateDescription(description, 35);
 
-
   const [isDisliked, setIsDisliked] = useState(false);
-  const handledislike = async() => {
-    try{
+  const handledislike = async () => {
+    try {
       const data = {
-        user : decoded.user_id,
-        article : id,
-        action : 'dislike'
-      }
-      const res = await ArticleInteractions(data)
-      console.log(res.data,"hi");
+        user: decoded.user_id,
+        article: id,
+        action: "dislike",
+      };
+      const res = await ArticleInteractions(data);
+      console.log(res.data, "hi");
       setIsLiked(false);
       setIsDisliked(true);
       onSubmit();
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
-    
   };
   const [isLiked, setIsLiked] = useState(false);
-  const handleLike = async() => {
-    try{
+  const handleLike = async () => {
+    try {
       const data = {
-        user : decoded.user_id,
-        article : id,
-        action : 'like'
-      }
-      const res = await ArticleInteractions(data)
-      console.log(res.data,"like");
+        user: decoded.user_id,
+        article: id,
+        action: "like",
+      };
+      const res = await ArticleInteractions(data);
+      console.log(res.data, "like");
       setIsLiked(true);
       setIsDisliked(false);
       onSubmit();
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
 
-  const handleBlock = async(id) => {
-    try{
+  const handleBlock = async (id) => {
+    try {
       const data = {
-        user : decoded.user_id,
-        article : id,
-        action : 'block'
-      }
-      const res = await ArticleInteractions(data)
-      console.log(res.data,"block");
+        user: decoded.user_id,
+        article: id,
+        action: "block",
+      };
+      const res = await ArticleInteractions(data);
+      console.log(res.data, "block");
       setIsLiked(false);
       setIsDisliked(false);
       onSubmit();
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
@@ -123,47 +189,63 @@ export function ArticleCards({name , description, image , tags, category, author
           <Typography variant="h6" color="gray" className="mt-4 mb-4 uppercase">
             {category}
           </Typography>
-          <div className="mt-4 mr-8 ">
-            <Tooltip content="Block this post">
-              <button
-                className='hover:scale-110'
-                // onClick={handleLike}
-              >
-                <ConfirmDialogue id ={id} header = "Block" content='You wont be able to see this post again' onsubmit={handleBlock} />
-                
-              </button>
-            </Tooltip>
-          </div>
+          {decoded.user_id === author_id ? (
+            <div className="mt-4 mr-8">
+              <Tooltip content="Edit this post">
+                <button className="hover:scale-110 mr-2">
+
+                  <FaEdit onClick={() => handleEditClick()}/>
+                 <EditArticleDialogue
+                 isOpen={isEditDialogOpen}
+                 onClose={handleCloseDialog}
+                 title='Edit Article'
+                 profile_data = {article}  
+                 setProfileData={setArticle}
+                 onSubmit={handleArticleEdit}
+                 
+                 />
+                </button>
+              </Tooltip>
+              <Tooltip content="Delete this post">
+                <button className="hover:scale-110">
+                  <ConfirmDialogue
+                    purpose='delete'
+                    id={id}
+                    header="Delete"
+                    content="This Post Will be permanently deleted "
+                    onsubmit={handleArticleDelete}
+                  />
+                </button>
+              </Tooltip>
+            </div>
+          ) : (
+            <div className="mt-4 mr-8">
+              <Tooltip content="Block this post">
+                <button className="hover:scale-110">
+                  <ConfirmDialogue
+                  purpose='block'
+                    id={id}
+                    header="Block"
+                    content="You won't be able to see this post again"
+                    onsubmit={handleBlock}
+                  />
+                </button>
+              </Tooltip>
+              
+            </div>
+          )}
         </div>
         <Typography variant="h4" color="blue-gray" className="mb-2 w-3/4">
           {name}
         </Typography>
         <Typography color="gray" className="mb-8 font-normal">
-        {truncatedDescription}
-
-
-
+          {truncatedDescription}
         </Typography>
         <a className="inline-block">
           <div className="flex justify-around">
-            <Button variant="text" className="flex items-center gap-2 mr-28">
-              Read More
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-                className="h-4 w-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
-                />
-              </svg>
-            </Button>
-            
+           
+          <ArticleView article_name={name} description={description} image={image} author={author} tags={tags} category={category}/>
+
             <div className="mt-1 ml-10 flex gap-1">
               <button
                 className={` focus:outline-none transform transition-all ${
@@ -172,12 +254,10 @@ export function ArticleCards({name , description, image , tags, category, author
                 onClick={handleLike}
               >
                 <FaThumbsUp />
-                
               </button>
               <h1 className="text-sm mt-2">{like}</h1>
-              
             </div>
-            
+
             <div className="mt-1 ml-5 flex gap-1 ">
               <button
                 className={` focus:outline-none transform transition-all mt-1 ${
@@ -188,7 +268,6 @@ export function ArticleCards({name , description, image , tags, category, author
                 <FaThumbsDown />
               </button>
               <h1 className="text-sm mt-2">{dislike}</h1>
-              
             </div>
           </div>
         </a>

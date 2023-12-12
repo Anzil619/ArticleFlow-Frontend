@@ -7,6 +7,7 @@ import LoginPage from '../Pages/LoginPage'
 function ProtectedRoutes() {
     const token = localStorage.getItem('token')
     if (token){
+      
         return <Outlet/>
     } else {
       return <LoginPage/>

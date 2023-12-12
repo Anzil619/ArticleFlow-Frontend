@@ -4,6 +4,7 @@ import ProtectedRoutes from '../ProtectedRoutes/ProtectedRoutes'
 import Homepage from '../Pages/Homepage'
 import MyProfile from '../Pages/MyProfile'
 import CreateArticle from '../Pages/CreateArticle'
+import Preference from '../Pages/Preference'
 
 
 
@@ -16,6 +17,7 @@ function UserRoutes() {
             <Route path='/homepage/' element={<Homepage/>}/>
             <Route path='/profile/' element={<MyProfile/>}/>
             <Route path='/createarticle/' element={<CreateArticle/>}/>
+            <Route path='/choosepreference/' element={<Preference/>}/>
             
         </Route>
     </Routes>

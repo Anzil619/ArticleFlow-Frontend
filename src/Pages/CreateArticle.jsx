@@ -94,7 +94,7 @@ function CreateArticle() {
       formData.append("author", decoded.user_id);
       formData.append("image", newImg);
       const res = await ShareArticle(formData);
-    //   navigate("/user/homepage/");
+      navigate("/user/homepage/");
       console.log(res);
     } catch (error) {
       console.log(error);
