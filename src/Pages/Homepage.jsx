@@ -43,7 +43,7 @@ function Homepage() {
     }
   };
 
-  const filterPreference = async (preference, category) => {
+  const filterPreference = async () => {
     try {
       const res = await GetCategory();
       const res1 = await GetUserPreferences(decoded.user_id);
@@ -57,31 +57,15 @@ function Homepage() {
     } catch (error) {
       console.log(error);
     }
-
-    
-
-    
-    // const preferenceIds = preference.map((item) => item.preference.category);
-    // const categoryIds = category.map((item) => item.category);
-
-    // console.log(preferenceIds, "preference");
-    // console.log(categoryIds, "category");
-
-    // const combinedValues = [...preferenceIds, ...categoryIds]; // Combine both arrays
-    // const uniqueSet = new Set(combinedValues); // Create a set to store unique values
-
-    // const filtered = Array.from(uniqueSet);
-    // console.log(filtered, "anzilssss");
-    // setFilteredpref(filtered); // Set the state with an array of unique values
   };
 
   const handlePreferenceList = async () => {
     try {
       const res = await GetUserPreferences(decoded.user_id);
-      // console.log(res.data, "preferenceeeeeeeee");
+     
       setPreference(res.data);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 
@@ -92,7 +76,6 @@ function Homepage() {
     }
     try {
       const res = await DeletePreference(id);
-      // console.log(res.data, "anzillllll");
       handlePreferenceList();
       console.log(category, "cate");
       const preference = "foryou";
@@ -100,7 +83,7 @@ function Homepage() {
       filterPreference();
       
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 
@@ -114,15 +97,14 @@ function Homepage() {
         user: decoded.user_id,
         preference: id,
       };
-      // console.log(data,"data");
+      
       const res = await CreatePreference(data);
-      // console.log(res.data, "anzillllll");
       handlePreferenceList();
       const preference = "foryou";
       handleCategoryClick(preference);
       filterPreference();
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 
@@ -134,11 +116,8 @@ function Homepage() {
     if (category === "foryou") {
       setSelectedCategory(category);
       try {
-        // console.log("hi");
-
         const res = await GetUserPreferences(decoded.user_id);
         const preferencesArray = res.data.map((item) => item.preference.id);
-        // console.log(res.data, "preder");
         const data = {
           category_ids: preferencesArray,
         };
@@ -150,16 +129,13 @@ function Homepage() {
             )
         );
 
-        // console.log(filteredArticles, "ambuja");
         setArticle(filteredArticles);
-        // console.log(res.data, "userpreferences");
       } catch (error) {
-        // console.log(error);
+        console.log(error);
       }
     } else {
       setSelectedCategory(category);
       try {
-        // console.log("aaaaaaanniiiiiiii");
         let arr = [];
         arr.push(category);
         const data = {
@@ -172,7 +148,6 @@ function Homepage() {
               (interaction) => interaction.blocked
             )
         );
-        // console.log(filteredArticles, "ambuja");
         setArticle(filteredArticles);
       } catch (error) {
         console.log(error);
@@ -180,7 +155,6 @@ function Homepage() {
     }
   };
 
-  // console.log(article, "anzukkkkk");
 
   return (
     <div className="bg-gray-200 min-h-screen h-full ">

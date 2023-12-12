@@ -7,7 +7,6 @@ import { jwtDecode } from "jwt-decode";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function CreateArticle() {
   const [newImg, setNewImg] = useState(null); // To track the selected image file
   const [showImage, setShowImage] = useState(null); // To display the selected image
@@ -52,55 +51,50 @@ function CreateArticle() {
   };
 
   const truncateDescription = (description) => {
-    const words = description.split(' ');
-  
+    const words = description.split(" ");
+
     if (words.length < 50) {
-      
       return true;
-    }else{
-        return false
+    } else {
+      return false;
     }
-  
-    
   };
 
   const validation = () => {
     if (form.article_name.trim() === "") {
       toast.error("Article name should not be empty");
       return false;
-    } 
-    else if (form.category.trim() === "") {
+    } else if (form.category.trim() === "") {
       toast.error("category should not be empty");
       return false;
+    } else if (newImg === null) {
+      toast.error("Please provide an Image");
+      return false;
+    } else if (truncateDescription(form.description)) {
+      toast.error("Description should be atleast 50 words");
+      return false;
     }
-    else if (newImg === null) {
-        toast.error("Please provide an Image");
-        return false;
-      }else if (truncateDescription(form.description)){
-        toast.error("Description should be atleast 50 words")
-        return false;
-      }
     return true;
   };
 
   const handleCreateArticle = async () => {
-    if (validation()){
-    try {
-      const formData = new FormData();
-      formData.append("article_name", form.article_name);
-      formData.append("category", form.category);
-      formData.append("tags", form.tags);
-      formData.append("description", form.description);
-      formData.append("author", decoded.user_id);
-      formData.append("image", newImg);
-      const res = await ShareArticle(formData);
-      navigate("/user/homepage/");
-      console.log(res);
-    } catch (error) {
-      console.log(error);
+    if (validation()) {
+      try {
+        const formData = new FormData();
+        formData.append("article_name", form.article_name);
+        formData.append("category", form.category);
+        formData.append("tags", form.tags);
+        formData.append("description", form.description);
+        formData.append("author", decoded.user_id);
+        formData.append("image", newImg);
+        const res = await ShareArticle(formData);
+        navigate("/user/homepage/");
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
-}
 
   return (
     <div>
@@ -224,7 +218,6 @@ function CreateArticle() {
         </div>
       </div>
       <ToastContainer />
-
     </div>
   );
 }

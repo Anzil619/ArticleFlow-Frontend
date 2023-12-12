@@ -99,8 +99,7 @@ function SignupPage() {
           dob: "",
         });
         setPass({ cpassword: "", check: true });
-        toast.success("Account Created Successfully , Coninue to Login page!")
-
+        toast.success("Account Created Successfully , Coninue to Login page!");
       } catch (error) {
         if (error.response && error.response.data) {
           const errorData = error.response.data;
@@ -242,7 +241,12 @@ function SignupPage() {
 
             <Typography color="gray" className="mt-4 text-center font-normal">
               Already Have an Account ?
-              <a onClick={()=>navigate("/")} className="font-medium text-gray-900 hover:underline">Login</a>
+              <a
+                onClick={() => navigate("/")}
+                className="font-medium text-gray-900 hover:underline"
+              >
+                Login
+              </a>
             </Typography>
           </div>
         </form>

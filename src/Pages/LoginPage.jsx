@@ -9,7 +9,7 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import axios from "axios";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserLogin } from "../Services/Services";
@@ -50,12 +50,11 @@ function LoginPage() {
         if (res.status === 200) {
           const token = JSON.stringify(res.data);
           localStorage.setItem("token", token);
-          const decoded = jwtDecode(token)
+          const decoded = jwtDecode(token);
           console.log(decoded);
-          if (decoded.user_data.is_completed){
+          if (decoded.user_data.is_completed) {
             navigate("/user/homepage/ ");
-
-          }else{
+          } else {
             navigate("/user/choosepreference/ ");
           }
         } else {

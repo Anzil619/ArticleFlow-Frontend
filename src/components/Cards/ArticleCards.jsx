@@ -10,7 +10,11 @@ import { MdOutlineReportGmailerrorred } from "react-icons/md";
 
 import { FaEdit, FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { ArticleInteractions, DeleteArticle, EditArticles } from "../../Services/Services";
+import {
+  ArticleInteractions,
+  DeleteArticle,
+  EditArticles,
+} from "../../Services/Services";
 import { jwtDecode } from "jwt-decode";
 import { ConfirmDialogue } from "../drawer/ConfirmDialogue";
 import EditArticleDialogue from "../drawer/EditArticleDialogue";
@@ -30,7 +34,6 @@ export function ArticleCards({
   userInteractions,
   onokclick,
 }) {
-
   const token = localStorage.getItem("token");
   const decoded = jwtDecode(token);
 
@@ -39,15 +42,13 @@ export function ArticleCards({
     setIsEditDialogOpen(false);
   };
   const handleEditClick = () => {
-    
     setIsEditDialogOpen(true);
-    
   };
 
-  const handleArticleEdit = async(data,img) =>{
-    console.log(data,"data");
-    console.log(img,"image");
-    try{
+  const handleArticleEdit = async (data, img) => {
+    console.log(data, "data");
+    console.log(img, "image");
+    try {
       const formData = new FormData();
       formData.append("article_name", data.article_name);
       // formData.append("category", data.category);
@@ -57,37 +58,31 @@ export function ArticleCards({
       if (img instanceof File) {
         formData.append("image", img);
       }
-      
-      const res = await EditArticles(id,formData)
+
+      const res = await EditArticles(id, formData);
       console.log(res.data);
       onSubmit();
-
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
-  const handleArticleDelete = async() =>{
-    
-    try{
-     
-      const res = await DeleteArticle(id)
+  };
+  const handleArticleDelete = async () => {
+    try {
+      const res = await DeleteArticle(id);
       console.log(res.data);
       onSubmit();
-
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  
-
-
-
-  const [article, setArticle] = useState({"article_name" : name ,"description" : description , "image" : image ,"tags" : tags, "category" : category, })
-
-
-
-
+  const [article, setArticle] = useState({
+    article_name: name,
+    description: description,
+    image: image,
+    tags: tags,
+    category: category,
+  });
 
   console.log(author, "author");
 
@@ -196,23 +191,21 @@ export function ArticleCards({
             <div className="mt-4 mr-8">
               <Tooltip content="Edit this post">
                 <button className="hover:scale-110 mr-2">
-
-                  <FaEdit onClick={() => handleEditClick()}/>
-                 <EditArticleDialogue
-                 isOpen={isEditDialogOpen}
-                 onClose={handleCloseDialog}
-                 title='Edit Article'
-                 profile_data = {article}  
-                 setProfileData={setArticle}
-                 onSubmit={handleArticleEdit}
-                 
-                 />
+                  <FaEdit onClick={() => handleEditClick()} />
+                  <EditArticleDialogue
+                    isOpen={isEditDialogOpen}
+                    onClose={handleCloseDialog}
+                    title="Edit Article"
+                    profile_data={article}
+                    setProfileData={setArticle}
+                    onSubmit={handleArticleEdit}
+                  />
                 </button>
               </Tooltip>
               <Tooltip content="Delete this post">
                 <button className="hover:scale-110">
                   <ConfirmDialogue
-                    purpose='delete'
+                    purpose="delete"
                     id={id}
                     header="Delete"
                     content="This Post Will be permanently deleted "
@@ -226,7 +219,7 @@ export function ArticleCards({
               <Tooltip content="Block this post">
                 <button className="hover:scale-110">
                   <ConfirmDialogue
-                  purpose='block'
+                    purpose="block"
                     id={id}
                     header="Block"
                     content="You won't be able to see this post again"
@@ -234,7 +227,6 @@ export function ArticleCards({
                   />
                 </button>
               </Tooltip>
-              
             </div>
           )}
         </div>
@@ -246,8 +238,14 @@ export function ArticleCards({
         </Typography>
         <a className="inline-block">
           <div className="flex justify-around">
-           
-          <ArticleView article_name={name} description={description} image={image} author={author} tags={tags} category={category}/>
+            <ArticleView
+              article_name={name}
+              description={description}
+              image={image}
+              author={author}
+              tags={tags}
+              category={category}
+            />
 
             <div className="mt-1 ml-10 flex gap-1">
               <button

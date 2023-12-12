@@ -70,10 +70,10 @@ function Preference() {
   const handleListCategory = async () => {
     try {
       const res = await GetCategory();
-      // console.log(res.data, "sdaasda");
+
       setCategory(res.data);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 

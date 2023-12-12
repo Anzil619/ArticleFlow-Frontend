@@ -9,23 +9,30 @@ import {
 import { MdOutlineReportGmailerrorred } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
 
- 
-export function ConfirmDialogue({button, header, content, onsubmit ,id, purpose}) {
-   
+export function ConfirmDialogue({
+  button,
+  header,
+  content,
+  onsubmit,
+  id,
+  purpose,
+}) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
 
-  const handleSubmit = () =>{
-    
+  const handleSubmit = () => {
     onsubmit(id);
     handleOpen();
-  }
+  };
 
   return (
     <>
       <button onClick={handleOpen} variant="gradient">
-        {purpose === 'delete' ? <FaTrash/> : <MdOutlineReportGmailerrorred size={25} />}
-      
+        {purpose === "delete" ? (
+          <FaTrash />
+        ) : (
+          <MdOutlineReportGmailerrorred size={25} />
+        )}
       </button>
       <Dialog
         open={open}
@@ -36,9 +43,7 @@ export function ConfirmDialogue({button, header, content, onsubmit ,id, purpose}
         }}
       >
         <DialogHeader>{header}</DialogHeader>
-        <DialogBody>
-          {content}
-        </DialogBody>
+        <DialogBody>{content}</DialogBody>
         <DialogFooter>
           <Button
             variant="text"

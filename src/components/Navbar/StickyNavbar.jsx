@@ -9,10 +9,10 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  Collapse,
+  
 } from "@material-tailwind/react";
 
-import profile_photo from "../../assets/profile/3dprof.jpg";
+
 import { FaUserCircle } from "react-icons/fa";
 import { Logout } from "../../Services/Services";
 import { useNavigate } from "react-router-dom";
@@ -55,15 +55,17 @@ export function StickyNavbar() {
         </a>
       </Typography>
 
-      
-
       <Typography
         as="li"
         variant="small"
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <a href="#" onClick={()=>navigate("/user/createarticle/")} className="flex items-center">
+        <a
+          href="#"
+          onClick={() => navigate("/user/createarticle/")}
+          className="flex items-center"
+        >
           Create Article
         </a>
       </Typography>
