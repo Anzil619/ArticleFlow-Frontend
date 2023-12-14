@@ -122,14 +122,14 @@ function Homepage() {
           category_ids: preferencesArray,
         };
         const res1 = await GetArticles(data);
-        const filteredArticles = res1.data.filter(
-          (article) =>
-            !article.user_interactions.some(
-              (interaction) => interaction.blocked
-            )
-        );
+const filteredArticles = res1.data.filter(article =>
+  !article.user_interactions.some(
+    interaction => interaction.user === decoded.user_id && interaction.blocked
+  )
+);
 
-        setArticle(filteredArticles);
+setArticle(filteredArticles);
+
       } catch (error) {
         console.log(error);
       }
@@ -141,14 +141,15 @@ function Homepage() {
         const data = {
           category_ids: arr,
         };
-        const res = await GetArticles(data);
-        const filteredArticles = res.data.filter(
-          (article) =>
-            !article.user_interactions.some(
-              (interaction) => interaction.blocked
-            )
-        );
-        setArticle(filteredArticles);
+        
+        const res1 = await GetArticles(data);
+const filteredArticles = res1.data.filter(article =>
+  !article.user_interactions.some(
+    interaction => interaction.user === decoded.user_id && interaction.blocked
+  )
+);
+
+setArticle(filteredArticles);
       } catch (error) {
         console.log(error);
       }
